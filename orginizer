@@ -15,7 +15,7 @@ class Organizer(App):
         self.add_task_layout = BoxLayout(size_hint_y=None, height=50)
         self.task_list = ScrollView()
 
-        self.add_task_input = TextInput(hint_text='დაამატე დავასრულებული დავალება', font_name='NotoSansGeorgian-Regular.ttf', font_size=18, size_hint_x=0.7)
+        self.add_task_input = TextInput(hint_text='დაამატე დავალება', font_name='NotoSansGeorgian-Regular.ttf', font_size=18, size_hint_x=0.7)
         self.add_due_date_input = TextInput(hint_text='Due date (YYYY-MM-DD)', size_hint_x=0.2)
         self.add_task_button = Button(text='Add Task', size_hint_x=0.1)
         self.add_task_button.bind(on_press=self.add_task)

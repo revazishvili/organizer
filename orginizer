@@ -1,92 +1,105 @@
-# Import necessary modules from Kivy
-from kivy.app import App
-from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.label import Label
-from kivy.uix.textinput import TextInput
-from kivy.uix.button import Button
-from kivy.uix.scrollview import ScrollView
+# საჭირო მოდულების იმპორტი კივიდან
+from kivy.app import App  # App კლასის იმპორტი, რომელიც კივის აპლიკაციების ძირითადი კლასია
+from kivy.uix.boxlayout import BoxLayout  # BoxLayout კლასის იმპორტი ვიჯეტების განლაგებისთვის
+from kivy.uix.label import Label  # Label კლასის იმპორტი ტექსტის გამოსახატავად
+from kivy.uix.textinput import TextInput  # TextInput კლასის იმპორტი ტექსტის შესაყვანად
+from kivy.uix.button import Button  # Button კლასის იმპორტი ღილაკების შესაქმნელად
+from kivy.uix.scrollview import ScrollView  # ScrollView კლასის იმპორტი კონტენტის გასახრიალად
 
-# Define the main application class
+# მთავარი აპლიკაციის კლასის განმარტება
 class Organizer(App):
-    # Constructor to initialize the application
+    # კონსტრუქტორი აპლიკაციის ინიციალიზაციისთვის
     def __init__(self):
-        super().__init__()
-        # Dictionary to store tasks with their due dates
+        super().__init__()  # მშობელი კლასის (App) კონსტრუქტორის გამოძახება
+        # ლექსიკონი დავალებებისა და ვადების შესანახად
         self.tasks = {}
 
-    # Method to build the GUI
+    # მეთოდი გრაფიკული ინტერფეისის აგებისთვის
     def build(self):
-        # Main layout is vertical
+        # მთავარი განლაგება ვერტიკალურია
         self.layout = BoxLayout(orientation='vertical')
-        # Layout for adding tasks
+
+        # განლაგება დავალების დამატებისთვის
         self.add_task_layout = BoxLayout(size_hint_y=None, height=50)
-        # Scrollable view for displaying tasks
+
+        # გასახრიალი ხედი დავალებების გამოსახატავად
         self.task_list = ScrollView()
 
-        # Text input for task name
+        # ტექსტური შეყვანა დავალების სახელისთვის
         self.add_task_input = TextInput(hint_text='დაამატე დავალება', font_name='NotoSansGeorgian-Regular.ttf', font_size=18, size_hint_x=0.7)
-        # Text input for due date
+
+        # ტექსტური შეყვანა ვადის შესაყვანად
         self.add_due_date_input = TextInput(hint_text='Due date (YYYY-MM-DD)', size_hint_x=0.2)
-        # Button to add task
-        self.add_task_button = Button(text='დავალება', size_hint_x=0.1, font_name='NotoSansGeorgian-Regular.ttf',)
-        # Bind the button press event to the add_task method
+
+        # ღილაკი დავალების დასამატებლად
+        self.add_task_button = Button(text='დამატება', size_hint_x=0.1, font_name='NotoSansGeorgian-Regular.ttf',)
+
+        # ღილაკის დაჭერის ამბის მიბმა add_task მეთოდთან
         self.add_task_button.bind(on_press=self.add_task)
 
-        # Add widgets to the layout
+        # ვიჯეტების დამატება განლაგებაში
         self.add_task_layout.add_widget(self.add_task_input)
         self.add_task_layout.add_widget(self.add_due_date_input)
         self.add_task_layout.add_widget(self.add_task_button)
         self.layout.add_widget(self.add_task_layout)
         self.layout.add_widget(self.task_list)
 
-        # Return the main layout
+        # მთავარი განლაგების დაბრუნება
         return self.layout
 
-    # Method to add a new task
+    # მეთოდი ახალი დავალების დასამატებლად
     def add_task(self, instance):
-        # Get task name and due date from input fields
+        # დავალებისა და ვადის მიღება შეყვანის ველებიდან
         task_name = self.add_task_input.text.strip()
         due_date = self.add_due_date_input.text.strip()
 
-        # If both task name and due date are provided
+        # თუ დავალებისა და ვადის ველები შევსებულია
         if task_name and due_date:
-            # Add the task to the dictionary
+            # დავალების დამატება ლექსიკონში
             self.tasks[task_name] = due_date
-            # Update the task list view
+
+            # დავალებების სიის განახლება
             self.update_task_list()
-            # Clear input fields
+
+            # შეყვანის ველების გასუფთავება
             self.add_task_input.text = ''
             self.add_due_date_input.text = ''
 
-    # Method to remove a task
+    # მეთოდი დავალების ამოსაშლელად
     def remove_task(self, task_name):
-        # Remove the task from the dictionary
+        # დავალების წაშლა ლექსიკონიდან
         del self.tasks[task_name]
-        # Update the task list view
+
+        # დავალებების სიის განახლება
         self.update_task_list()
 
-    # Method to update the task list view
+    # მეთოდი დავალებების სიის განსახლებისთვის
     def update_task_list(self):
-        # Clear previous widgets from the task list
+        # წინა ვიჯეტების გასუფთავება დავალებების სიიდან
         self.task_list.clear_widgets()
 
-        # Iterate through tasks dictionary
+        # ციკლი დავალებების ლექსიკონზე
         for task_name, due_date in self.tasks.items():
-            # Create a layout for each task
+            # განლაგების შექმნა თითოეული დავალებისთვის
             task_layout = BoxLayout(size_hint_y=None, height=40)
-            # Label to display task name and due date
+
+            # ლეიბლი დავალებისა და ვადის გამოსახატავად
             task_label = Label(text=f'{task_name} - თარიღი: {due_date}', size_hint_x=0.8, font_name='NotoSansGeorgian-Regular.ttf', font_size=18)
-            # Button to remove the task
+
+            # ღილაკი დავალების ამოსაშლელად
             remove_button = Button(text='Remove', size_hint_x=0.2)
-            # Bind the button press event to remove_task method with task name as argument
+
+            # ღილაკის დაჭერის ამბის მიბმა remove_task მეთოდთან დავალების სახელით
             remove_button.bind(on_press=lambda x, task=task_name: self.remove_task(task))
-            # Add widgets to task layout
+
+            # ვიჯეტების დამატება დავალების განლაგებაში
             task_layout.add_widget(task_label)
             task_layout.add_widget(remove_button)
-            # Add task layout to task list view
+
+            # დავალების განლაგების დამატება დავალებების სიაში
             self.task_list.add_widget(task_layout)
 
-# Entry point of the program
+# პროგრამის შესასვლელი წერტილი
 if __name__ == '__main__':
-    # Create an instance of Organizer class and run the application
+    # Organizer კლასის ინსტანციის შექმნა და აპლიკაციის გაშვება
     Organizer().run()

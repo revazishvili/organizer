@@ -1,3 +1,4 @@
+# Import necessary modules from Kivy
 from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
@@ -5,55 +6,87 @@ from kivy.uix.textinput import TextInput
 from kivy.uix.button import Button
 from kivy.uix.scrollview import ScrollView
 
+# Define the main application class
 class Organizer(App):
+    # Constructor to initialize the application
     def __init__(self):
         super().__init__()
+        # Dictionary to store tasks with their due dates
         self.tasks = {}
 
+    # Method to build the GUI
     def build(self):
+        # Main layout is vertical
         self.layout = BoxLayout(orientation='vertical')
+        # Layout for adding tasks
         self.add_task_layout = BoxLayout(size_hint_y=None, height=50)
+        # Scrollable view for displaying tasks
         self.task_list = ScrollView()
 
+        # Text input for task name
         self.add_task_input = TextInput(hint_text='დაამატე დავალება', font_name='NotoSansGeorgian-Regular.ttf', font_size=18, size_hint_x=0.7)
+        # Text input for due date
         self.add_due_date_input = TextInput(hint_text='Due date (YYYY-MM-DD)', size_hint_x=0.2)
-        self.add_task_button = Button(text='Add Task', size_hint_x=0.1)
+        # Button to add task
+        self.add_task_button = Button(text='დავალება', size_hint_x=0.1, font_name='NotoSansGeorgian-Regular.ttf',)
+        # Bind the button press event to the add_task method
         self.add_task_button.bind(on_press=self.add_task)
 
+        # Add widgets to the layout
         self.add_task_layout.add_widget(self.add_task_input)
         self.add_task_layout.add_widget(self.add_due_date_input)
         self.add_task_layout.add_widget(self.add_task_button)
-
         self.layout.add_widget(self.add_task_layout)
         self.layout.add_widget(self.task_list)
 
+        # Return the main layout
         return self.layout
 
+    # Method to add a new task
     def add_task(self, instance):
+        # Get task name and due date from input fields
         task_name = self.add_task_input.text.strip()
         due_date = self.add_due_date_input.text.strip()
 
+        # If both task name and due date are provided
         if task_name and due_date:
+            # Add the task to the dictionary
             self.tasks[task_name] = due_date
+            # Update the task list view
             self.update_task_list()
+            # Clear input fields
             self.add_task_input.text = ''
             self.add_due_date_input.text = ''
 
+    # Method to remove a task
     def remove_task(self, task_name):
+        # Remove the task from the dictionary
         del self.tasks[task_name]
+        # Update the task list view
         self.update_task_list()
 
+    # Method to update the task list view
     def update_task_list(self):
+        # Clear previous widgets from the task list
         self.task_list.clear_widgets()
 
+        # Iterate through tasks dictionary
         for task_name, due_date in self.tasks.items():
+            # Create a layout for each task
             task_layout = BoxLayout(size_hint_y=None, height=40)
-            task_label = Label(text=f'{task_name} - Due: {due_date}', size_hint_x=0.8, font_name='NotoSansGeorgian-Regular.ttf', font_size=18)
+            # Label to display task name and due date
+            task_label = Label(text=f'{task_name} - თარიღი: {due_date}', size_hint_x=0.8, font_name='NotoSansGeorgian-Regular.ttf', font_size=18)
+            # Button to remove the task
             remove_button = Button(text='Remove', size_hint_x=0.2)
+            # Bind the button press event to remove_task method with task name as argument
             remove_button.bind(on_press=lambda x, task=task_name: self.remove_task(task))
+            # Add widgets to task layout
             task_layout.add_widget(task_label)
             task_layout.add_widget(remove_button)
+            # Add task layout to task list view
             self.task_list.add_widget(task_layout)
 
+# Entry point of the program
 if __name__ == '__main__':
+    # Create an instance of Organizer class and run the application
     Organizer().run()
